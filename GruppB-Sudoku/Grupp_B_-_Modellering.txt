@@ -19,6 +19,7 @@ LösCell(x,y) // Kolla rad col ruta och reducera möjliga siffror
 
 
 class Ruta
+
 int startPosX;
 int startPosY;
 SkapaCeller(){ 
@@ -63,5 +64,20 @@ SkapaBräde()	// Skapar Rutor, Rader, Columner och en array av class Cell med da
 LösBräde()		// Itererar hela brädet och kör LösCell metoden
 GeUpp()			// Försökt lösa brädet en gång utan några ändringar i cellerna -> skriver ut resultatet
 
+
+
+// Exempel 
+Ruta ruta1 = new Ruta(0,0);
+Ruta ruta2 = new Ruta(0,3);
+
+cell1 = new Cell(x,y, värde, Ruta) //ruta1
+
+Ruta(int x, int y){
+	Cell[] cellArray = new Cell[];
+	
+	for (int x = startPosX; x < starPosX+2; x++)
+		for int y = startPosY; y < startPosY+2; y++)
+			cellArray[i] = SkapaCell(x,y, värde, this.Ruta)
+}
 
 
