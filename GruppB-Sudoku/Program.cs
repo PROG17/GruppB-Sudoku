@@ -10,11 +10,6 @@ namespace GruppB_Sudoku
     {
         static void Main(string[] args)
         {
-
-            Console.WriteLine("Welcome to the Matrix Grupp B...");
-
-            Console.ReadLine();
-
         }
     }
 }
