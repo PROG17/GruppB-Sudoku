@@ -10,6 +10,9 @@ namespace GruppB_Sudoku
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Micke Testar ifall det funkar som det ska");
+
+
         }
     }
 }
