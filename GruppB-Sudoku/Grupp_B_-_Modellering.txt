@@ -1,0 +1,67 @@
+class Bräde
+Rad rad
+Column column
+Ruta ruta
+bräde
+string startState	// reset osv RitaBräde(startState);
+string endState	// resultat (så långt vi kom) RitaBräde(endState);
+
+RitaBräde()
+Kolla(Rad)		//Returnera alla siffror i den cellens rad
+Kolla(Column)	//Returnera alla siffror i den cellens column
+Kolla(Ruta){	//Returnera alla siffror i den cellens ruta
+	for (int x = startPosX; x < starPosX+2; x++)
+		for int y = startPosY; y < startPosY+2; y++)
+	Cell cell+i = new Cell (data data data)
+}
+
+LösCell(x,y) // Kolla rad col ruta och reducera möjliga siffror
+
+
+class Ruta
+int startPosX;
+int startPosY;
+SkapaCeller(){ 
+	for (int x = startPosX; x < starPosX+2; x++)
+		for int y = startPosY; y < startPosY+2; y++)
+	Cell cell+i = new Cell (data data data)
+}
+
+class Rad
+int startPosX
+
+class Column
+int startPosY
+
+
+class Cell
+int posX;
+int posY;
+int List<int> värde;
+
+Ruta ruta; //Cellen vet vilken ruta den befinner sig i
+
+ReduceraMöjligaSiffror(fastaSiffror[]) //tar bort från värde List de fasta siffrorna.
+	if värde.length > 1	//inte löst celle
+		gör stuff
+	
+Cell(posX, posY, värde) //constructor
+	if värde == 0 
+		Fyll värde List med siffrorna 1-9
+
+
+Cell(posX, posY, värde, arraySiffrorRadColRuta[]) //constructor2 mer avancerad
+	if värde == 0
+		Skapa möjliga siffror beroende på arrayen
+		
+		
+class Spel
+DateTime timer;
+
+Inläsning() 	// Läser en sträng med siffror typ 100040785
+SkapaBräde()	// Skapar Rutor, Rader, Columner och en array av class Cell med data från inläsning
+LösBräde()		// Itererar hela brädet och kör LösCell metoden
+GeUpp()			// Försökt lösa brädet en gång utan några ändringar i cellerna -> skriver ut resultatet
+
+
+
