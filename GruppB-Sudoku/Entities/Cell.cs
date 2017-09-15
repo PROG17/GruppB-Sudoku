@@ -12,6 +12,7 @@ namespace GruppB_Sudoku.Entities
         int xPosition;
         int yPosition;
         int[] value;
+        bool solved;
 
         Box myBox;
 
@@ -21,7 +22,10 @@ namespace GruppB_Sudoku.Entities
             this.xPosition = xPosition;
             this.yPosition = yPosition;
             this.value = value;
+            
             this.myBox = myBox;
+
+            solved = false;
         }
 
 
