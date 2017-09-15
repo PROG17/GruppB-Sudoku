@@ -7,17 +7,33 @@ using System.IO;
 
 namespace GruppB_Sudoku
 {
-    class SodokuGame
+    public class SodokuGame
     {
+        // Fields
+        private static string _sodoku;
+
+        // Constructor
+        public SodokuGame(string filename)
+        {
+            ReadFromFile(filename);
+            PrintSodoku();
+            
+        }
+
         private static string ReadFromFile(string filename)
         {
-            string sodoku;
             using (StreamReader reader = new StreamReader(filename))
             {
-                sodoku = reader.ReadLine();
+                _sodoku = reader.ReadLine();
             }
-            return sodoku;
+            return _sodoku;
         }
+
+        private static void PrintSodoku()
+        {
+            Console.WriteLine(_sodoku);
+        }
+
 
         private static void CreateGrid()
         {

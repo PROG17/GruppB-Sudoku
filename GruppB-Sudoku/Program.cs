@@ -10,9 +10,8 @@ namespace GruppB_Sudoku
     {
         static void Main(string[] args)
         {
-            ReadSodokuFromFile(string blah);
-            // Rules.Start(string sodoku);
-
+            string filename = @"C:\Users\hobbo\Documents\Program C#\Projects\GruppB-Sudoku\GruppB-Sudoku\unsolvedsodoku.txt";
+            var sodoku = new SodokuGame(filename);
         }
     }
 }
