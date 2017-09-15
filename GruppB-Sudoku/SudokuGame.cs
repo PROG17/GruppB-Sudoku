@@ -7,16 +7,16 @@ using System.IO;
 
 namespace GruppB_Sudoku
 {
-    public class SodokuGame
+    public class SudokuGame
     {
         // Fields
-        private static string _sodoku;
+        private static string sudoku;
 
         // Constructor
-        public SodokuGame(string filename)
+        public SudokuGame(string filename)
         {
             ReadFromFile(filename);
-            PrintSodoku();
+            PrintSudoku();
             
         }
 
@@ -24,14 +24,14 @@ namespace GruppB_Sudoku
         {
             using (StreamReader reader = new StreamReader(filename))
             {
-                _sodoku = reader.ReadLine();
+                sudoku = reader.ReadLine();
             }
-            return _sodoku;
+            return sudoku;
         }
 
-        private static void PrintSodoku()
+        private static void PrintSudoku()
         {
-            Console.WriteLine(_sodoku);
+            Console.WriteLine(sudoku);
         }
 
 

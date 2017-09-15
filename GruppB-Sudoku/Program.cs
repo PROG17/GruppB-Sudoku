@@ -11,7 +11,7 @@ namespace GruppB_Sudoku
         static void Main(string[] args)
         {
             string filename = Environment.CurrentDirectory + @"\unsolvedsodoku.txt";
-            var sodoku = new SodokuGame(filename);
+            var sodoku = new SudokuGame(filename);
         }
     }
 }
