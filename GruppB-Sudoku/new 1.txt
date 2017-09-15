@@ -1,0 +1,3 @@
+Error: failed to push some refs to 'https://github.com/PROG17/GruppB-Sudoku.git'
+Error encountered while pushing to the remote repository: Git process failed unexpectedly.
+PushCommand.ExecutePushCommand
