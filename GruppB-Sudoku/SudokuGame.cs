@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using GruppB_Sudoku.Entities;
 
 namespace GruppB_Sudoku
 {
@@ -15,7 +16,8 @@ namespace GruppB_Sudoku
         // Constructor
         public SudokuGame(string filename)
         {
-            ReadFromFile(filename);
+            
+            Grid gameGrid = new Grid(ReadFromFile(filename));
             PrintSudoku();
             
         }

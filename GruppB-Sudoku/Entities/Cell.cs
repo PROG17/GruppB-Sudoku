@@ -11,24 +11,27 @@ namespace GruppB_Sudoku.Entities
         // Fields
         int xPosition;
         int yPosition;
-        int[] value;
+        private int[] numbers;
         bool solved;
 
         Box myBox;
+
+        // Properties
+        public int[] Numbers { get => numbers; private set => numbers = value; }
 
         // Constructor
         public Cell(int xPosition, int yPosition, int[] value, Box myBox)
         {
             this.xPosition = xPosition;
             this.yPosition = yPosition;
-            this.value = value;
+            Numbers = value;
             
             this.myBox = myBox;
 
             solved = false;
         }
 
-
+        
     }
 
 }
