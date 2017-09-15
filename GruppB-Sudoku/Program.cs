@@ -10,8 +10,9 @@ namespace GruppB_Sudoku
     {
         static void Main(string[] args)
         {
+            ReadSodokuFromFile(string blah);
+            // Rules.Start(string sodoku);
 
-         
         }
     }
 }
