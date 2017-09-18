@@ -9,35 +9,75 @@ namespace GruppB_Sudoku.Entities
     public class Grid
     {
         //Fields
-        static Cell[,] cells = new Cell[9, 9];
-        static Box[] boxes = new Box[9];
+        Cell[,] cells = new Cell[9, 9];
+        Box[,] boxes = new Box[3,3];
 
         //Constructor
         public Grid(string sudokuString)
         {
-            //MakeBoxes();
+            MakeBoxes();
             MakeGridFromString(sudokuString);
             TestPrint();
         }
-        private static void MakeGridFromString(string sudokuString)
+        private void MakeGridFromString(string sudokuString)
         {
-          
-
-            Box testBox = new Box();
-
-            int cellCounter = 0;
-
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    int number = int.Parse(sudokuString.ElementAt(cellCounter).ToString());
-                    cells[x, y] = new Cell(x, y, number, testBox);
-                    cellCounter++;
+                    int number = int.Parse(sudokuString.ElementAt(Cell.cellCount).ToString());
+                    cells[x, y] = new Cell(x, y, number, DetermineMyBox(x,y));
+                    //cells[x, y].TestCell();
                 }
             }
         }
-        private static void TestPrint()
+
+        private void MakeBoxes()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    boxes[i, j] = new Box(i * 3, j * 3);
+                }
+            }
+        }
+
+        private Box DetermineMyBox(int xPosition, int yPosition)
+        {
+
+            int xPos;
+            int yPos;
+
+            if (xPosition < 3)
+            {
+                xPos = 0;
+            }
+            else if (xPosition < 6)
+            {
+                xPos = 1;
+            }
+            else
+            {
+                xPos = 2;
+            }
+
+            if (yPosition < 3)
+            {
+                yPos = 0;
+            }
+            else if (yPosition < 6)
+            {
+                yPos = 1;
+            }
+            else
+            {
+                yPos = 2;
+            }
+
+            return boxes[xPos,yPos];
+        }
+        private void TestPrint()
         {
             for (int x = 0; x < 9; x++)
             {

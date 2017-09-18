@@ -8,13 +8,17 @@ namespace GruppB_Sudoku.Entities
 {
     class Cell
     {
+        // Global Variable
+        public static int cellCount = 0;
+
         // Fields
-        int xPosition;
-        int yPosition;
-        private static int number;
-        static bool solved;
-        //skapa en global variabel för antal cells
-       static List<int> possibleNums = new List<int>();
+        public int xPosition;
+        public int yPosition;
+        private int number;
+        bool solved;
+
+
+        List<int> possibleNums = new List<int>();
 
         Box myBox;
 
@@ -32,9 +36,10 @@ namespace GruppB_Sudoku.Entities
 
             MakeListIfZero();
 
-
+            cellCount++;
         }
-        private static void MakeListIfZero()
+
+        private void MakeListIfZero()
         {
             if (number == 0)
             {
@@ -45,6 +50,19 @@ namespace GruppB_Sudoku.Entities
             {
                 solved = true;
             }
+        }
+        public void TestCell()
+        {
+            if (!solved)
+            {
+                foreach (var item in possibleNums)
+                {
+                    Console.Write(item + " ");
+                }
+                Console.WriteLine();
+            }
+            else
+                Console.WriteLine(number);
         }
 
     }
