@@ -8,35 +8,22 @@ namespace GruppB_Sudoku.Entities
 {
     class Cell
     {
-        // Global Variable
-        public static int cellCount = 0;
-
         // Fields
         public int xPosition;
         public int yPosition;
-        private int number;
+        public int number;
         bool solved;
-
-
         List<int> possibleNums = new List<int>();
 
-        Box myBox;
-
-        // Properties
-        public int Number { get => number; private set => number = value; }
-
         // Constructor
-        public Cell(int xPosition, int yPosition, int value, Box myBox)
+        public Cell(int xPosition, int yPosition, int value)
         {
             this.xPosition = xPosition;
             this.yPosition = yPosition;
-            Number = value;
-            this.myBox = myBox;
+            number = value;
             solved = false;
 
             MakeListIfZero();
-
-            cellCount++;
         }
 
         private void MakeListIfZero()
