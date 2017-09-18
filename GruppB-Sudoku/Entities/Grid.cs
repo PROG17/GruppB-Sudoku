@@ -21,14 +21,19 @@ namespace GruppB_Sudoku.Entities
         }
         private static void MakeGridFromString(string sudokuString)
         {
+          
+
             Box testBox = new Box();
-            int[] test = { 1 };
+
+            int cellCounter = 0;
 
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    cells[x, y] = new Cell(x, y, test,testBox);
+                    int number = int.Parse(sudokuString.ElementAt(cellCounter).ToString());
+                    cells[x, y] = new Cell(x, y, number, testBox);
+                    cellCounter++;
                 }
             }
         }
@@ -38,13 +43,13 @@ namespace GruppB_Sudoku.Entities
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    if (cells[x, y].Numbers.Length > 1)
+                    if (cells[x, y].Number == 0)
                     {
                         Console.Write("0 ");
                     }
                     else
                     {
-                        Console.Write($"{cells[x, y].Numbers[0]} ");
+                        Console.Write($"{cells[x, y].Number} ");
                     }
                 }
                 Console.WriteLine();
