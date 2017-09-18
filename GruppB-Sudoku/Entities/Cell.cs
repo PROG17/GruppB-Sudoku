@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GruppB_Sudoku.Entities
 {
-    class Cell
+    public class Cell
     {
         // Fields
         public int xPosition;
         public int yPosition;
         public int number;
         bool solved;
-        List<int> possibleNums = new List<int>();
+        public List<int> possibleNums = new List<int>();
 
         // Constructor
         public Cell(int xPosition, int yPosition, int value)

@@ -9,7 +9,7 @@ namespace GruppB_Sudoku.Entities
     public class Grid
     {
         //Fields
-        Cell[,] cells = new Cell[9, 9];
+        public Cell[,] cells = new Cell[9, 9];
         //Box[,] boxes = new Box[3,3];
 
         //Constructor
@@ -35,27 +35,26 @@ namespace GruppB_Sudoku.Entities
         }
 
 
-        private int[] DetermineMyBox(int xPosition, int yPosition)
-        {
-            // Divide by 3 to get starting position of box
-            int xPos = xPosition/3;
-            int yPos = yPosition/3;
-            int[] xyPos = { xPos, yPos };
+        //public int[] DetermineMyBox(int xPosition, int yPosition)
+        //{
+        //    Divide by 3 to get starting position of box
 
-            return xyPos;
-            // Nybörjaraktigt att lösa lätta beräkningar med if satser
-            //if (xPosition < 3)
-            //{
-            //    xPos = 0;
-            //}
-            //else if (xPosition < 6)
-            //{
-            //    xPos = 1;
-            //}
-            //else
-            //{
-            //    xPos = 2;
-            //}
+
+
+           // return xyPos;
+           // Nybörjaraktigt att lösa lätta beräkningar med if satser
+           //if (xPosition < 3)
+           //{
+           //    xPos = 0;
+           //}
+           //else if (xPosition < 6)
+           //{
+           //    xPos = 1;
+           //}
+           //else
+           //{
+           //    xPos = 2;
+           //}
 
             //if (yPosition < 3)
             //{
@@ -71,7 +70,7 @@ namespace GruppB_Sudoku.Entities
             //}
 
 
-        }
+        //
 
         private void TestPrint()
         {
