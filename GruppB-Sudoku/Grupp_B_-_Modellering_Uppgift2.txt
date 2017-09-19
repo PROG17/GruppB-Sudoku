@@ -1,0 +1,33 @@
+suduko uppgift 2
+Modellering och pseudokod
+
+När ska vi börja gissa?
+-Ett varv utan några ändringar i celler.
+-Counter som kollar antal lösta celler, om den inte ökar.
+
+När har vi gissat fel?
+-när en cell har en helt tom lista.
+
+Hur gissar vi?
+-klona vår grid och gissa i klonen.
+-läs av grid, lösta värden och skapa en ny grid av dom.
+-Spara sitt "state" och gå tillbaks om det blir fel.
+
+Hur vet vi när en grid är löst?
+-Counter av lösta celler = 81
+-Om ingen cell har mer än en siffra i sig.
+
+rekursion
+Lagra senatse grid i en lista
+	Gör alla möjliga lösningsförsök()
+	|	om inget var rätt
+	|		ta bort senaste grid från listan
+	|	om rätt
+	|		avsluta programmet
+	|		
+	=>Ny gissning Lagra senaste grid i lista
+		om inget var rätt
+			...
+			
+			
+			

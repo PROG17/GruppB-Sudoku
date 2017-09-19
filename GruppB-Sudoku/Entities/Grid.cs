@@ -35,10 +35,7 @@ namespace GruppB_Sudoku.Entities
                     {
                         possibleNumbers.Add(number);
                     }
-
                     cells[x, y] = possibleNumbers;
-                    //cells[x, y] = new Cell(x, y, number);
-                    //cells[x, y].TestCell();
                 }
             }
         }

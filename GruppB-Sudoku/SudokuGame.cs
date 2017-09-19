@@ -36,27 +36,31 @@ namespace GruppB_Sudoku
 
         public void PlayGame()
         {
-            bool solved = false;
-            while (!solved)
+            bool unSolved = true;
+            while (unSolved)
             {
-                solved = SolveGrid();
+                unSolved = SolveGrid();
             }
             gameGrid.TestPrint();
         }
-
-        public bool SolveGrid()
+        public void GuessSolution()
         {
-            bool solved = true;
+
+        }
+        public bool SolveGrid()//returns true when game is solved
+        {
+            bool cellHasChanged = false;
+            bool hasUnsolvedCells = false;
             for (int xPos = 0; xPos < 9; xPos++)
             {
                 for (int yPos = 0; yPos < 9; yPos++)
                 {
                     List<int> tempNumbers = new List<int>();
 
-                    // If unsolved
+                    // If cell is unsolved
                     if (gameGrid.cells[xPos, yPos].Count > 1)
                     {
-                        solved = false;
+                        hasUnsolvedCells = true;
                         //check row, col, box value compare with possible nrs
                         for (int y = 0; y < 9; y++) // row
                         {
@@ -69,7 +73,6 @@ namespace GruppB_Sudoku
                                     tempNumbers.Add(currentNumber);
                                 }
                             }
-
                         }
 
                         for (int x = 0; x < 9; x++) // col
@@ -90,27 +93,38 @@ namespace GruppB_Sudoku
                         //Box check
                         for (int x = xxPos; x < xxPos + 3; x++)
                         {
-                            
                             for (int y = yyPos; y < yyPos + 3; y++)
                             {
                                 int currentNumber = gameGrid.cells[x, y].ElementAt(0);
                                 if (!tempNumbers.Contains(currentNumber) && gameGrid.cells[x, y].Count == 1)
                                 {
-                                    
                                     tempNumbers.Add(currentNumber);
                                 }
                             }
                         }
+                        //If SolveCell() changes any numbers it returns true
+                        cellHasChanged = SolveCell(gameGrid.cells[xPos, yPos], tempNumbers);
                     }
-
-                    SolveCell(gameGrid.cells[xPos,yPos], tempNumbers);
                 }
             }
-            return solved;
+            if (!hasUnsolvedCells)
+            {
+                return false;
+            }
+            //else if (!hasChanged && hasUnsolvedCells)
+            //{
+            //    GuessSolution();
+            //    return true;
+
+            //}
+            else return true;
+
         }
         // Compare possible numbers in cell with numbers from that cells row/col/box and remove them
-        public void SolveCell(List<int> possibleNumbers, List<int> tempNumbers)
+        public bool SolveCell(List<int> possibleNumbers, List<int> tempNumbers)
         {
+            bool changed = false;
+
             if (possibleNumbers.Count > 1)
             {
                 foreach (int number in tempNumbers)
@@ -118,15 +132,17 @@ namespace GruppB_Sudoku
                     if (possibleNumbers.Contains(number))
                     {
                         possibleNumbers.Remove(number);
+                        changed = true;
                     }
                 }
             }
-
             foreach (var item in possibleNumbers)
             {
                 Console.Write(item);
             }
             Console.WriteLine();
+
+            return changed;
 
         }
 
