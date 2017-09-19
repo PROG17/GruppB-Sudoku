@@ -9,13 +9,11 @@ namespace GruppB_Sudoku.Entities
     public class Grid
     {
         //Fields
-        public Cell[,] cells = new Cell[9, 9];
-        //Box[,] boxes = new Box[3,3];
+        public List<int>[,] cells = new List<int>[9, 9];
 
         //Constructor
         public Grid(string sudokuString)
         {
-            //MakeBoxes();
             MakeGridFromString(sudokuString);
             TestPrint();
         }
@@ -25,83 +23,44 @@ namespace GruppB_Sudoku.Entities
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    // Bad Practice att ändra enstaka element i en sträng
-                    //int number = int.Parse(sudokuString.ElementAt(Cell.cellCount).ToString()); 
+                    List<int> possibleNumbers = new List<int>();
                     int number = sudokuString[x * 9 + y] - '0';
-                    cells[x, y] = new Cell(x, y, number);
-                    cells[x, y].TestCell();
+                    if (number == 0)
+                    {
+                        int[] nums = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                        
+                        possibleNumbers.AddRange(nums);
+                    }
+                    else
+                    {
+                        possibleNumbers.Add(number);
+                    }
+
+                    cells[x, y] = possibleNumbers;
+                    //cells[x, y] = new Cell(x, y, number);
+                    //cells[x, y].TestCell();
                 }
             }
         }
 
-
-        //public int[] DetermineMyBox(int xPosition, int yPosition)
-        //{
-        //    Divide by 3 to get starting position of box
-
-
-
-           // return xyPos;
-           // Nybörjaraktigt att lösa lätta beräkningar med if satser
-           //if (xPosition < 3)
-           //{
-           //    xPos = 0;
-           //}
-           //else if (xPosition < 6)
-           //{
-           //    xPos = 1;
-           //}
-           //else
-           //{
-           //    xPos = 2;
-           //}
-
-            //if (yPosition < 3)
-            //{
-            //    yPos = 0;
-            //}
-            //else if (yPosition < 6)
-            //{
-            //    yPos = 1;
-            //}
-            //else
-            //{
-            //    yPos = 2;
-            //}
-
-
-        //
-
-        private void TestPrint()
+        public void TestPrint()
         {
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    if (cells[x, y].number == 0)
+                    if (cells[x, y].Count > 1)
                     {
                         Console.Write("0 ");
                     }
                     else
                     {
-                        Console.Write($"{cells[x, y].number} ");
+                        Console.Write($"{cells[x,y].ElementAt(0)} ");
                     }
                 }
                 Console.WriteLine();
             }
         }
-
-
-        //private void MakeBoxes()
-        //{
-        //    for (int i = 0; i < 3; i++)
-        //    {
-        //        for (int j = 0; j < 3; j++)
-        //        {
-        //            boxes[i, j] = new Box(i * 3, j * 3);
-        //        }
-        //    }
-        //}
 
     }
 }

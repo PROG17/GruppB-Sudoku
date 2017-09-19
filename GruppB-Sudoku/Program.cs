@@ -12,7 +12,7 @@ namespace GruppB_Sudoku
         {
             string filename = Environment.CurrentDirectory + @"\unsolvedsodoku.txt";
             SudokuGame sudoku = new SudokuGame(filename);
-            sudoku.SolveGrid();
+            sudoku.PlayGame();
         }
     }
 }

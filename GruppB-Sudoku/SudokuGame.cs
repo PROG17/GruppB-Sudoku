@@ -34,48 +34,99 @@ namespace GruppB_Sudoku
             Console.WriteLine(sudoku);
         }
 
-        public void SolveGrid()
+        public void PlayGame()
         {
-
-            foreach (var cell in gameGrid.cells)
+            bool solved = false;
+            while (!solved)
             {
-                List<int> tempNumbers = new List<int>();
-                if (cell.number == 0)
+                solved = SolveGrid();
+            }
+            gameGrid.TestPrint();
+        }
+
+        public bool SolveGrid()
+        {
+            bool solved = true;
+            for (int xPos = 0; xPos < 9; xPos++)
+            {
+                for (int yPos = 0; yPos < 9; yPos++)
                 {
-                    //check row, col, box value compare with possible nrs
-                    for (int y = 0; y < 9; y++) // row
-                    {
-                        tempNumbers.Add(gameGrid.cells[cell.xPosition, y].number);
-                    }
-                    for (int x = 0; x < 9; x++) // row
-                    {
-                        tempNumbers.Add(gameGrid.cells[x, cell.yPosition].number);
-                    }
+                    List<int> tempNumbers = new List<int>();
 
-                    //int[] boxStartPosition = gameGrid.DetermineMyBox(cell.xPosition, cell.yPosition);
-                    int xPos = cell.xPosition / 3;
-                    int yPos = cell.yPosition / 3;
-
-                    for (int x = xPos*3; x < xPos * 3 + 3; x++)
+                    // If unsolved
+                    if (gameGrid.cells[xPos, yPos].Count > 1)
                     {
-
-                        for (int y = yPos*3; y < yPos * 3 + 3; y++)
+                        solved = false;
+                        //check row, col, box value compare with possible nrs
+                        for (int y = 0; y < 9; y++) // row
                         {
-                           Console.WriteLine((xPos + x) + " " + (yPos + y));
-                            tempNumbers.Add(gameGrid.cells[x, y].number);
+                            // if solved cell take cell value add to list of tempnumbers
+                            if (gameGrid.cells[xPos, y].Count == 1)
+                            {
+                                int currentNumber = gameGrid.cells[xPos, y].ElementAt(0);
+                                if (!tempNumbers.Contains(currentNumber))
+                                {
+                                    tempNumbers.Add(currentNumber);
+                                }
+                            }
+
+                        }
+
+                        for (int x = 0; x < 9; x++) // col
+                        {
+                            if (gameGrid.cells[x, yPos].Count == 1)
+                            {
+                                int currentNumber = gameGrid.cells[x, yPos].ElementAt(0);
+                                if (!tempNumbers.Contains(currentNumber))
+                                {
+                                    tempNumbers.Add(currentNumber);
+                                }
+                            }
+                        }
+                        // Divide by 3 to remove decimal values then multiply by 3.
+                        int xxPos = (xPos / 3) * 3;
+                        int yyPos = (yPos / 3) * 3;
+
+                        //Box check
+                        for (int x = xxPos; x < xxPos + 3; x++)
+                        {
+                            
+                            for (int y = yyPos; y < yyPos + 3; y++)
+                            {
+                                int currentNumber = gameGrid.cells[x, y].ElementAt(0);
+                                if (!tempNumbers.Contains(currentNumber) && gameGrid.cells[x, y].Count == 1)
+                                {
+                                    
+                                    tempNumbers.Add(currentNumber);
+                                }
+                            }
                         }
                     }
-                }
-                foreach (var item in tempNumbers)
-                {
-                    if (item != 0)
-                    {
-                        Console.Write(item);
-                    }
 
+                    SolveCell(gameGrid.cells[xPos,yPos], tempNumbers);
                 }
-                Console.WriteLine();
             }
+            return solved;
+        }
+        // Compare possible numbers in cell with numbers from that cells row/col/box and remove them
+        public void SolveCell(List<int> possibleNumbers, List<int> tempNumbers)
+        {
+            if (possibleNumbers.Count > 1)
+            {
+                foreach (int number in tempNumbers)
+                {
+                    if (possibleNumbers.Contains(number))
+                    {
+                        possibleNumbers.Remove(number);
+                    }
+                }
+            }
+
+            foreach (var item in possibleNumbers)
+            {
+                Console.Write(item);
+            }
+            Console.WriteLine();
 
         }
 
