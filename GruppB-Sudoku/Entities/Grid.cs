@@ -8,6 +8,7 @@ namespace GruppB_Sudoku.Entities
 {
     public class Grid
     {
+        // Test push github från vs2017
         //Fields
         public List<int>[,] cells = new List<int>[9, 9];
 
