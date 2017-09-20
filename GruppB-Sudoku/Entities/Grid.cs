@@ -8,7 +8,6 @@ namespace GruppB_Sudoku.Entities
 {
     public class Grid
     {
-        // Test push github från vs2017
         //Fields
         public List<int>[,] cells = new List<int>[9, 9];
 
@@ -47,9 +46,13 @@ namespace GruppB_Sudoku.Entities
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    if (cells[x, y].Count > 1)
+                    if (cells[x, y].Count > 1 )
                     {
                         Console.Write("0 ");
+                    }
+                    else if (cells[x, y].Count <= 0)
+                    {
+                        Console.Write("F ");
                     }
                     else
                     {
