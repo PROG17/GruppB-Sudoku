@@ -20,13 +20,13 @@ namespace GruppB_Sudoku
             TestPrint();
         }
 
+        // Tries to solve a sudoku grid and returns false if it is unsolvable
         public bool SolveSudoku()
         {
-            bool hasUnsolvedCells;
-            do
-            { // while (hasUnsolvedCells)
-                hasUnsolvedCells = false;
-                noCellsChanged = true; // No cells have been changed yet
+            while(true) // Go until a value is returned
+            {
+                bool hasUnsolvedCells = false;
+                noCellsChanged = true; // No cells have been changed yet, gets value in SolveCell() method
                 for (int xPos = 0; xPos < 9; xPos++)
                 {
                     for (int yPos = 0; yPos < 9; yPos++)
@@ -38,34 +38,32 @@ namespace GruppB_Sudoku
                             bool cellIsEmpty = SolveCell(xPos, yPos);
                             if (cellIsEmpty)
                             {
-                                return false;
+                                return false; // This grid is unsolvable, cell with 0 possible numbers
                             }
                         }
                     }
                 }
-                // Has found all possible logical solutions and the sudoku hasnt been solved yet.
-                if (noCellsChanged && !hasUnsolvedCells) // Solved without guesses needed
+                
+                if (!hasUnsolvedCells) // No unsolved cells remain, the grid is solved.
                 {
-                    Console.WriteLine("SOLVED IN SOLVESUDOKU");
+                    Console.WriteLine("SUDOKU SOLVED:");
                     TestPrint();
                     return true;
                 }
-                else if (noCellsChanged) // Needs to make guesses to solve sudoku
+                else if (noCellsChanged) // Found all possible logical solutions and the sudoku hasnt been solved yet
                 {
+                    Console.WriteLine("ALL LOGICAL SOLUTIONS FOUND - FIND AN EMPTY CELL AND GUESS");
                     bool solved = GuessSolution();
                     if (solved)
                     {
-                        return true; // Solved
+                        return true; // Grid was solved after making a guess
                     }
-                    return false; //if all guesses fail this version is unsolvable.
+                    return false; // When all guesses failed this grid is unsolvable
                 }
-                
-            } while (hasUnsolvedCells);
-            //Console.WriteLine("SOLVED");
-            //TestPrint();
-            return true;
+            } 
         }
 
+        // Finds an unsolved cell and assumes a value for it, then attempts to solve a grid
         public bool GuessSolution()
         {
             // Find the first unsolved cell
@@ -77,7 +75,7 @@ namespace GruppB_Sudoku
                     {
                         List<int> possibleNumbers = GetRowColBoxNumbers(x, y);
 
-                        // Attempt to solve the sudoku by using one of the possible numbers of the unsolved cell
+                        // Attempt to solve the sudoku by using each of the possible numbers of the unsolved cell
                         for (int i = 0; i < possibleNumbers.Count; i++)
                         {
                             StringBuilder sb = new StringBuilder(MakeStringFromGrid());
@@ -85,24 +83,26 @@ namespace GruppB_Sudoku
                             sb[(x * 9) + y] = ch;
                             string modifiedSudoku = sb.ToString();
 
+                            Console.WriteLine("GUESS #" + (i + 1) + "/" + possibleNumbers.Count() + ":");
+                            
                             // Make a new SudokuGame with the guess inserted in to the grid
                             SudokuGame sudokuGuess = new SudokuGame(modifiedSudoku);
-                            bool solved = sudokuGuess.SolveSudoku(); // Try to solve the new sudoku.
+                            bool solved = sudokuGuess.SolveSudoku(); // Try to solve the new sudoku
                             if (solved)
                             {
-                                return true; // Solved 
+                                return true; // Solved the new sudoku
                             }
                         }
-                        Console.WriteLine("OUT OF GUESSES - RETURN TO LAST");
+                        Console.WriteLine("OUT OF POSSIBLE NUMBERS - RETURN TO PREVIOUS EMPTY CELL AND KEEP GUESSING");
                         return false;
                     }
                 }
             }
-            return true;
+            return true; // Unreachable, this whole method is only called if there are unsolved cells.
         }
 
 
-        // look at possible numbers for a cell to solve a cell
+        // Check possible numbers for a cell and "solve" it
         private bool SolveCell(int xPos, int yPos)
         {
             List<int> possibleNumbers = GetRowColBoxNumbers(xPos, yPos);
@@ -112,36 +112,35 @@ namespace GruppB_Sudoku
                 {
                     cells[xPos, yPos] = possibleNumbers.ElementAt(0); // Set the last remaining number as the cell value
                     noCellsChanged = false;
-                    Console.WriteLine("CELL CHANGED");
                 }
-                else if (possibleNumbers.Count == 0) // if all numbers are already in use the sudoku is unsolvable
+                else if (possibleNumbers.Count == 0) // If there are no possible numbers this cell & grid is unsolvable
                 {
-                    Console.WriteLine("FAILED GUESS");
-                    return true; // If there are no possible numbers the sudoku is unsolvable
+                    Console.WriteLine("INVALID GUESS - TRY NEXT POSSIBLE NUMBER");
+                    return true; 
                 }
             }
             return false;
         }
 
-        //check relevant row, col, box values for a cell
+        // Check relevant numbers in row/col/box for a cell
         private List<int> GetRowColBoxNumbers(int xPos, int yPos)
         {
             List<int> usedNumbers = new List<int>();
 
-            for (int y = 0; y < 9; y++) // row
+            for (int y = 0; y < 9; y++) // Check row
             {
                 // if solved cell take cell value add to list of tempnumbers
                 if (cells[xPos, y] != 0)
                 {
                     int currentNumber = cells[xPos, y];
-                    if (!usedNumbers.Contains(currentNumber))
+                    if (!usedNumbers.Contains(currentNumber)) // Only add new numbers
                     {
                         usedNumbers.Add(currentNumber);
                     }
                 }
             }
 
-            for (int x = 0; x < 9; x++) // col
+            for (int x = 0; x < 9; x++) // Check col
             {
                 if (cells[x, yPos] != 0)
                 {
@@ -152,12 +151,11 @@ namespace GruppB_Sudoku
                     }
                 }
             }
-            // Divide by 3 to remove decimal values then multiply by 3.
-            int xxPos = (xPos / 3) * 3;
+            // Find the "starting position" of the box
+            int xxPos = (xPos / 3) * 3; // Divide by 3 to remove decimal values then multiply by 3.
             int yyPos = (yPos / 3) * 3;
 
-            //Box check
-            for (int x = xxPos; x < xxPos + 3; x++)
+            for (int x = xxPos; x < xxPos + 3; x++) // Check box
             {
                 for (int y = yyPos; y < yyPos + 3; y++)
                 {
@@ -169,7 +167,7 @@ namespace GruppB_Sudoku
                 }
             }
 
-            // Start with possibleNumbers 1-9 and remove the usedNumbers
+            // Start with possibleNumbers 1-9 and remove the usedNumbers to get the remaining possible numbers
             int[] allNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<int> possibleNumbers = allNumbers.ToList<int>();
             foreach (var number in usedNumbers)
@@ -179,8 +177,7 @@ namespace GruppB_Sudoku
             return possibleNumbers;
         }
 
-
-
+        // Parse string to grid
         private void MakeGridFromString(string sudokuString)
         {
             for (int x = 0; x < 9; x++)
@@ -192,6 +189,8 @@ namespace GruppB_Sudoku
                 }
             }
         }
+
+        // Parse grid to string
         private string MakeStringFromGrid()
         {
             string currentSudoku = "";
@@ -222,9 +221,7 @@ namespace GruppB_Sudoku
             //}
             //Console.WriteLine("- - - - - - - - - - - \n");
 
-
             Console.WriteLine(MakeStringFromGrid());
         }
-
     }
 }
