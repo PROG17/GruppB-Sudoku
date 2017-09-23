@@ -4,190 +4,226 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using GruppB_Sudoku.Entities;
 
 namespace GruppB_Sudoku
 {
     public class SudokuGame
     {
         // Fields
-        Grid gameGrid;
-        bool aCellHasChanged = false;
-        List<Grid> possibleSolutions = new List<Grid>();
+        private int[,] cells = new int[9, 9];
+        private bool noCellsChanged = true;
 
         // Constructor
         public SudokuGame(string sudoku)
         {
-            gameGrid = new Grid(sudoku);
-            //PrintSudoku();
+            MakeGridFromString(sudoku);
+            TestPrint();
         }
 
-        public void PlayGame()
+        public bool SolveSudoku()
         {
-            bool solvable = SolveSudoku(); // Returnar false om det är olösligt
-            gameGrid.TestPrint();
-            if (solvable == false)
-            {
-                Console.WriteLine("Unsolvable!");
-            }
-            else
-            {
-                GuessSolution();
-            }
-        }
-
-        public void GuessSolution()
-        {
-            // Create String from Grid 
-            string currentSudoku = "";
-            foreach (List<int> val in gameGrid.cells)
-            {
-                if (val.Count > 1)
-                {
-                    currentSudoku += "0";
-                }
-                else
-                    currentSudoku += val.ElementAt(0);
-            }
-
-            // Loopa igenom Grid
-            for (int x = 0; x < 9; x++)
-            {
-                int currentCell = 0; // x*9+y;
-                for (int y = 0; y < 9; y++)
-                {
-                    // Hitta första olösta cellen
-                    if (gameGrid.cells[x, y].Count > 1) 
-                    {
-                        for (int i = 0; i < gameGrid.cells[x, y].Count; i++) // Sätt in en av possibleNumbers i sodoku lösningen
-                        {
-                            // Sätter in ett av värdena från en cells possibleNumbers lista 
-                            StringBuilder sb = new StringBuilder(currentSudoku);
-                            char ch = (char)(48 + gameGrid.cells[x, y][i]); 
-                            sb[currentCell] = ch;
-                            string modifiedSudoku = sb.ToString();
-
-                            // Skapar en ny SodokuGame med gissningen
-                            SudokuGame sudokuGuess = new SudokuGame(modifiedSudoku);
-                            sudokuGuess.PlayGame(); // Måste kunna hoppa ut ur loopen när den behöver gissa igen.
-                        }
-                        // Om inget av försöken lyckades är sudokun olöslig, man behöver inte testa alla celler, endast en.
-                    }
-                    currentCell++;
-                }
-            }
-        }
-
-        public bool SolveSudoku() //returns false if unsolvable
-        {
-            bool cellIsEmpty = false;
             bool hasUnsolvedCells;
-
-             // För att avgöra att vi behöver börja gissa
-            
-            do // while (hasUnsolvedCells)
-            {
-                aCellHasChanged = false;
+            do
+            { // while (hasUnsolvedCells)
                 hasUnsolvedCells = false;
+                noCellsChanged = true; // No cells have been changed yet
                 for (int xPos = 0; xPos < 9; xPos++)
                 {
                     for (int yPos = 0; yPos < 9; yPos++)
                     {
-                        List<int> tempNumbers = new List<int>();
-
-                        // If cell is unsolved
-                        if (gameGrid.cells[xPos, yPos].Count > 1)
+                        if (cells[xPos, yPos] == 0) // If cell is unsolved
                         {
                             hasUnsolvedCells = true;
-                            //check row, col, box value compare with possible nrs
-                            for (int y = 0; y < 9; y++) // row
-                            {
-                                // if solved cell take cell value add to list of tempnumbers
-                                if (gameGrid.cells[xPos, y].Count == 1)
-                                {
-                                    int currentNumber = gameGrid.cells[xPos, y].ElementAt(0);
-                                    if (!tempNumbers.Contains(currentNumber))
-                                    {
-                                        tempNumbers.Add(currentNumber);
-                                    }
-                                }
-                            }
-
-                            for (int x = 0; x < 9; x++) // col
-                            {
-                                if (gameGrid.cells[x, yPos].Count == 1)
-                                {
-                                    int currentNumber = gameGrid.cells[x, yPos].ElementAt(0);
-                                    if (!tempNumbers.Contains(currentNumber))
-                                    {
-                                        tempNumbers.Add(currentNumber);
-                                    }
-                                }
-                            }
-                            // Divide by 3 to remove decimal values then multiply by 3.
-                            int xxPos = (xPos / 3) * 3;
-                            int yyPos = (yPos / 3) * 3;
-
-                            //Box check
-                            for (int x = xxPos; x < xxPos + 3; x++)
-                            {
-                                for (int y = yyPos; y < yyPos + 3; y++)
-                                {
-                                    int currentNumber = gameGrid.cells[x, y].ElementAt(0);
-                                    if (!tempNumbers.Contains(currentNumber) && gameGrid.cells[x, y].Count == 1)
-                                    {
-                                        tempNumbers.Add(currentNumber);
-                                    }
-                                }
-                            }
-                            //If SolveCell() is an unsolvable cell it returns true
-                            cellIsEmpty = SolveCell(gameGrid.cells[xPos, yPos], tempNumbers);
+                            // Try to solve cell and if cell is unsolvable return false
+                            bool cellIsEmpty = SolveCell(xPos, yPos);
                             if (cellIsEmpty)
                             {
                                 return false;
-                                // Detta sudoku är olösligt!
                             }
                         }
                     }
                 }
-                if (aCellHasChanged == false)
+                // Has found all possible logical solutions and the sudoku hasnt been solved yet.
+                if (noCellsChanged && !hasUnsolvedCells) // Solved without guesses needed
                 {
-                    GuessSolution();
+                    Console.WriteLine("SOLVED IN SOLVESUDOKU");
+                    TestPrint();
+                    return true;
                 }
+                else if (noCellsChanged) // Needs to make guesses to solve sudoku
+                {
+                    bool solved = GuessSolution();
+                    if (solved)
+                    {
+                        return true; // Solved
+                    }
+                    return false; //if all guesses fail this version is unsolvable.
+                }
+                
             } while (hasUnsolvedCells);
+            //Console.WriteLine("SOLVED");
+            //TestPrint();
             return true;
         }
 
-        // Compare possible numbers in cell with numbers from that cells row/col/box and remove them
-        public bool SolveCell(List<int> possibleNumbers, List<int> tempNumbers)
+        public bool GuessSolution()
         {
-            bool cellIsEmpty = false;
-
-            if (possibleNumbers.Count > 1)
+            // Find the first unsolved cell
+            for (int x = 0; x < 9; x++)
             {
-                foreach (int number in tempNumbers)
+                for (int y = 0; y < 9; y++)
                 {
-                    if (possibleNumbers.Contains(number))
+                    if (cells[x, y] == 0)
                     {
-                        possibleNumbers.Remove(number);
-                        aCellHasChanged = true;
+                        List<int> possibleNumbers = GetRowColBoxNumbers(x, y);
 
-                        if (possibleNumbers.Count == 0)
+                        // Attempt to solve the sudoku by using one of the possible numbers of the unsolved cell
+                        for (int i = 0; i < possibleNumbers.Count; i++)
                         {
-                            cellIsEmpty = true; // Om listan av möjliga värden är tom
-                        }
+                            StringBuilder sb = new StringBuilder(MakeStringFromGrid());
+                            char ch = (char)(48 + possibleNumbers[i]);
+                            sb[(x * 9) + y] = ch;
+                            string modifiedSudoku = sb.ToString();
 
+                            // Make a new SudokuGame with the guess inserted in to the grid
+                            SudokuGame sudokuGuess = new SudokuGame(modifiedSudoku);
+                            bool solved = sudokuGuess.SolveSudoku(); // Try to solve the new sudoku.
+                            if (solved)
+                            {
+                                return true; // Solved 
+                            }
+                        }
+                        Console.WriteLine("OUT OF GUESSES - RETURN TO LAST");
+                        return false;
                     }
                 }
             }
-            foreach (var item in possibleNumbers)
+            return true;
+        }
+
+
+        // look at possible numbers for a cell to solve a cell
+        private bool SolveCell(int xPos, int yPos)
+        {
+            List<int> possibleNumbers = GetRowColBoxNumbers(xPos, yPos);
+            if (cells[xPos, yPos] == 0)
             {
-                Console.Write(item);
+                if (possibleNumbers.Count == 1) // If cell has a logial solution
+                {
+                    cells[xPos, yPos] = possibleNumbers.ElementAt(0); // Set the last remaining number as the cell value
+                    noCellsChanged = false;
+                    Console.WriteLine("CELL CHANGED");
+                }
+                else if (possibleNumbers.Count == 0) // if all numbers are already in use the sudoku is unsolvable
+                {
+                    Console.WriteLine("FAILED GUESS");
+                    return true; // If there are no possible numbers the sudoku is unsolvable
+                }
             }
-            Console.WriteLine();
+            return false;
+        }
 
-            return cellIsEmpty;
+        //check relevant row, col, box values for a cell
+        private List<int> GetRowColBoxNumbers(int xPos, int yPos)
+        {
+            List<int> usedNumbers = new List<int>();
 
+            for (int y = 0; y < 9; y++) // row
+            {
+                // if solved cell take cell value add to list of tempnumbers
+                if (cells[xPos, y] != 0)
+                {
+                    int currentNumber = cells[xPos, y];
+                    if (!usedNumbers.Contains(currentNumber))
+                    {
+                        usedNumbers.Add(currentNumber);
+                    }
+                }
+            }
+
+            for (int x = 0; x < 9; x++) // col
+            {
+                if (cells[x, yPos] != 0)
+                {
+                    int currentNumber = cells[x, yPos];
+                    if (!usedNumbers.Contains(currentNumber))
+                    {
+                        usedNumbers.Add(currentNumber);
+                    }
+                }
+            }
+            // Divide by 3 to remove decimal values then multiply by 3.
+            int xxPos = (xPos / 3) * 3;
+            int yyPos = (yPos / 3) * 3;
+
+            //Box check
+            for (int x = xxPos; x < xxPos + 3; x++)
+            {
+                for (int y = yyPos; y < yyPos + 3; y++)
+                {
+                    int currentNumber = cells[x, y];
+                    if (!usedNumbers.Contains(currentNumber) && cells[x, y] != 0)
+                    {
+                        usedNumbers.Add(currentNumber);
+                    }
+                }
+            }
+
+            // Start with possibleNumbers 1-9 and remove the usedNumbers
+            int[] allNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            List<int> possibleNumbers = allNumbers.ToList<int>();
+            foreach (var number in usedNumbers)
+            {
+                possibleNumbers.Remove(number); // Remove used numbers from possible numbers list
+            }
+            return possibleNumbers;
+        }
+
+
+
+        private void MakeGridFromString(string sudokuString)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                for (int y = 0; y < 9; y++)
+                {
+                    int number = sudokuString[x * 9 + y] - '0';
+                    cells[x, y] = number;
+                }
+            }
+        }
+        private string MakeStringFromGrid()
+        {
+            string currentSudoku = "";
+            foreach (var number in cells)
+            {
+                currentSudoku += number;
+            }
+            return currentSudoku;
+        }
+
+        public void TestPrint()
+        {
+            //for (int x = 0; x < 9; x++)
+            //{
+            //    if (x % 3 ==0 )
+            //    {
+            //        Console.WriteLine("- - - - - - - - - - -");
+            //    }
+            //    for (int y = 0; y < 9; y++)
+            //    {
+            //        if (y%3 == 0)
+            //        {
+            //            Console.Write("|");
+            //        }
+            //        Console.Write(cells[x, y] + " ");
+            //    }
+            //    Console.WriteLine("|");
+            //}
+            //Console.WriteLine("- - - - - - - - - - - \n");
+
+
+            Console.WriteLine(MakeStringFromGrid());
         }
 
     }
